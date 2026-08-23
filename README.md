@@ -46,18 +46,18 @@ NetVerify follows a decoupled, three-tier architecture that can be deployed enti
 
 ```mermaid
 flowchart TD
-    subgraph Streamlit Frontend [Port 8501]
+    subgraph frontend ["Streamlit Frontend [Port 8501]"]
         A[Dashboard UI]
         B[Geolocated Maps]
     end
-    subgraph FastAPI Backend [Port 8000]
+    subgraph backend ["FastAPI Backend [Port 8000]"]
         C[REST API Engine]
         D[Scikit-Learn DecisionTree]
     end
-    subgraph Database Layer [Port 5432]
+    subgraph database ["Database Layer [Port 5432]"]
         E[(PostgreSQL DB)]
     end
-    subgraph Automation Layer [Port 5678]
+    subgraph automation ["Automation Layer [Port 5678]"]
         F[n8n Workflow Engine]
     end
 
