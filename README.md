@@ -1,7 +1,7 @@
 
 </p>
  <p align="center">
-  <img  src="assets/Tunisietelecom.jpg" alt="NetVerify - Tunisie Telecom" width="180">
+  <img  src="assets/tt.png" alt="NetVerify - Tunisie Telecom" width="180">
 </p>
 
 <h1 align="center">NetVerify</h1>
