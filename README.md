@@ -1,5 +1,7 @@
-
-# NetVerify 📡
+<p align="center">
+  <img src="assets/Tunisietelecom.jpg" alt="NetVerify - Tunisie Telecom" width="900">
+</p>
+# NetVerify 
 
 > **Automated Post-Intervention Verification and Quality-of-Service Platform**  
 > Developed for **Tunisie Telecom** (Unit Management of Services -- Hached Complex) in collaboration with **ENSI** (National School of Computer Sciences, University of Manouba).
