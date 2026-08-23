@@ -1,9 +1,11 @@
 <p align="center">
-  <img src="assets/Tunisietelecom.jpg" alt="NetVerify - Tunisie Telecom" width="900">
+  <img src="assets/Tunisietelecom.jpg" alt="NetVerify - Tunisie Telecom" width="600">
 </p>
-# NetVerify 
 
-> **Automated Post-Intervention Verification and Quality-of-Service Platform**  
+<p align="center">
+  <strong>Automated Post-Intervention Verification and Quality-of-Service Platform</strong>
+</p>
+ 
 > Developed for **Tunisie Telecom** (Unit Management of Services -- Hached Complex) in collaboration with **ENSI** (National School of Computer Sciences, University of Manouba).
 
 ---
