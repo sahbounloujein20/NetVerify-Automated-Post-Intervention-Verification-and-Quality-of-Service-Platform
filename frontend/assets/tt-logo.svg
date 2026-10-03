@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 76" role="img" aria-label="Tunisie Telecom">
+  <title>Tunisie Telecom</title>
+  <defs>
+    <clipPath id="tt-logo-drop"><path d="M 56.851 5.006 A 38.0 38.0 0 1 0 56.851 70.994 L 114.600 38.000 Z"/></clipPath>
+  </defs>
+  <g clip-path="url(#tt-logo-drop)">
+    <polygon points="40.00,38.00 39.74,27.32 42.81,25.76 40.00,38.00" fill="#13C78F" stroke="#13C78F" stroke-width="0.3"/>
+    <polygon points="39.74,27.32 39.35,11.52 45.42,14.40 42.81,25.76" fill="#10A878" stroke="#10A878" stroke-width="0.3"/>
+    <polygon points="39.35,11.52 38.69,-15.18 51.76,-13.17 45.42,14.40" fill="#11B682" stroke="#11B682" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 42.81,25.76 45.98,27.30 40.00,38.00" fill="#25C673" stroke="#25C673" stroke-width="0.3"/>
+    <polygon points="42.81,25.76 45.42,14.40 50.59,19.04 45.98,27.30" fill="#21B066" stroke="#21B066" stroke-width="0.3"/>
+    <polygon points="45.42,14.40 51.76,-13.17 65.27,-7.23 50.59,19.04" fill="#24C270" stroke="#24C270" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 45.98,27.30 47.91,31.02 40.00,38.00" fill="#5FC84B" stroke="#5FC84B" stroke-width="0.3"/>
+    <polygon points="45.98,27.30 50.59,19.04 57.48,22.57 47.91,31.02" fill="#56B544" stroke="#56B544" stroke-width="0.3"/>
+    <polygon points="50.59,19.04 65.27,-7.23 81.03,1.77 57.48,22.57" fill="#5EC64A" stroke="#5EC64A" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 47.91,31.02 55.39,30.78 40.00,38.00" fill="#84D448" stroke="#84D448" stroke-width="0.3"/>
+    <polygon points="47.91,31.02 57.48,22.57 64.66,26.42 55.39,30.78" fill="#72B73E" stroke="#72B73E" stroke-width="0.3"/>
+    <polygon points="57.48,22.57 81.03,1.77 97.33,11.08 64.66,26.42" fill="#78C041" stroke="#78C041" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 55.39,30.78 59.64,34.40 40.00,38.00" fill="#C6E93A" stroke="#C6E93A" stroke-width="0.3"/>
+    <polygon points="55.39,30.78 64.66,26.42 82.38,30.22 59.64,34.40" fill="#A3C030" stroke="#A3C030" stroke-width="0.3"/>
+    <polygon points="64.66,26.42 97.33,11.08 119.06,23.50 82.38,30.22" fill="#AFCF33" stroke="#AFCF33" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 59.64,34.40 58.52,40.87 40.00,38.00" fill="#FFFE1D" stroke="#FFFE1D" stroke-width="0.3"/>
+    <polygon points="59.64,34.40 82.38,30.22 84.36,44.87 58.52,40.87" fill="#E8CE17" stroke="#E8CE17" stroke-width="0.3"/>
+    <polygon points="82.38,30.22 119.06,23.50 122.18,50.72 84.36,44.87" fill="#FFE41A" stroke="#FFE41A" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 58.52,40.87 56.99,44.50 40.00,38.00" fill="#FFD41F" stroke="#FFD41F" stroke-width="0.3"/>
+    <polygon points="58.52,40.87 84.36,44.87 68.25,48.80 56.99,44.50" fill="#FFBB1B" stroke="#FFBB1B" stroke-width="0.3"/>
+    <polygon points="84.36,44.87 122.18,50.72 102.58,61.92 68.25,48.80" fill="#FFC81D" stroke="#FFC81D" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 56.99,44.50 48.70,44.81 40.00,38.00" fill="#FFA820" stroke="#FFA820" stroke-width="0.3"/>
+    <polygon points="56.99,44.50 68.25,48.80 60.00,53.66 48.70,44.81" fill="#EF941C" stroke="#EF941C" stroke-width="0.3"/>
+    <polygon points="68.25,48.80 102.58,61.92 84.06,72.50 60.00,53.66" fill="#FFA820" stroke="#FFA820" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 48.70,44.81 45.31,47.13 40.00,38.00" fill="#FF6E28" stroke="#FF6E28" stroke-width="0.3"/>
+    <polygon points="48.70,44.81 60.00,53.66 52.75,59.90 45.31,47.13" fill="#E46224" stroke="#E46224" stroke-width="0.3"/>
+    <polygon points="60.00,53.66 84.06,72.50 66.06,82.78 52.75,59.90" fill="#F46926" stroke="#F46926" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 45.31,47.13 43.07,49.27 40.00,38.00" fill="#FF572C" stroke="#FF572C" stroke-width="0.3"/>
+    <polygon points="45.31,47.13 52.75,59.90 46.68,62.50 43.07,49.27" fill="#EE4E28" stroke="#EE4E28" stroke-width="0.3"/>
+    <polygon points="52.75,59.90 66.06,82.78 53.78,88.55 46.68,62.50" fill="#F25028" stroke="#F25028" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 43.07,49.27 40.62,48.13 40.00,38.00" fill="#FF3D29" stroke="#FF3D29" stroke-width="0.3"/>
+    <polygon points="43.07,49.27 46.68,62.50 41.42,61.30 40.62,48.13" fill="#E73625" stroke="#E73625" stroke-width="0.3"/>
+    <polygon points="46.68,62.50 53.78,88.55 43.23,90.86 41.42,61.30" fill="#FB3B28" stroke="#FB3B28" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 40.62,48.13 36.23,49.74 40.00,38.00" fill="#FF1452" stroke="#FF1452" stroke-width="0.3"/>
+    <polygon points="40.62,48.13 41.42,61.30 32.49,61.37 36.23,49.74" fill="#E91248" stroke="#E91248" stroke-width="0.3"/>
+    <polygon points="41.42,61.30 43.23,90.86 23.49,89.40 32.49,61.37" fill="#FA134D" stroke="#FA134D" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 36.23,49.74 33.04,48.55 40.00,38.00" fill="#F60387" stroke="#F60387" stroke-width="0.3"/>
+    <polygon points="36.23,49.74 32.49,61.37 26.36,58.67 33.04,48.55" fill="#F20386" stroke="#F20386" stroke-width="0.3"/>
+    <polygon points="32.49,61.37 23.49,89.40 9.89,83.65 26.36,58.67" fill="#FE038C" stroke="#FE038C" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 33.04,48.55 28.93,46.82 40.00,38.00" fill="#E016A2" stroke="#E016A2" stroke-width="0.3"/>
+    <polygon points="33.04,48.55 26.36,58.67 20.71,53.38 28.93,46.82" fill="#BF1289" stroke="#BF1289" stroke-width="0.3"/>
+    <polygon points="26.36,58.67 9.89,83.65 -3.29,72.50 20.71,53.38" fill="#CA1492" stroke="#CA1492" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 28.93,46.82 27.86,43.39 40.00,38.00" fill="#BF23A0" stroke="#BF23A0" stroke-width="0.3"/>
+    <polygon points="28.93,46.82 20.71,53.38 13.16,49.92 27.86,43.39" fill="#9F1D85" stroke="#9F1D85" stroke-width="0.3"/>
+    <polygon points="20.71,53.38 -3.29,72.50 -10.95,60.63 13.16,49.92" fill="#A91F8D" stroke="#A91F8D" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 27.86,43.39 28.07,39.33 40.00,38.00" fill="#902A98" stroke="#902A98" stroke-width="0.3"/>
+    <polygon points="27.86,43.39 13.16,49.92 9.94,41.34 28.07,39.33" fill="#83268A" stroke="#83268A" stroke-width="0.3"/>
+    <polygon points="13.16,49.92 -10.95,60.63 -15.64,44.19 9.94,41.34" fill="#86278E" stroke="#86278E" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 28.07,39.33 27.31,36.86 40.00,38.00" fill="#752E99" stroke="#752E99" stroke-width="0.3"/>
+    <polygon points="28.07,39.33 9.94,41.34 11.47,35.44 27.31,36.86" fill="#682987" stroke="#682987" stroke-width="0.3"/>
+    <polygon points="9.94,41.34 -15.64,44.19 -15.76,33.00 11.47,35.44" fill="#722D94" stroke="#722D94" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 27.31,36.86 27.84,33.15 40.00,38.00" fill="#6135A7" stroke="#6135A7" stroke-width="0.3"/>
+    <polygon points="27.31,36.86 11.47,35.44 18.27,29.33 27.84,33.15" fill="#532E90" stroke="#532E90" stroke-width="0.3"/>
+    <polygon points="11.47,35.44 -15.76,33.00 -11.81,17.32 18.27,29.33" fill="#542E90" stroke="#542E90" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 27.84,33.15 29.28,28.26 40.00,38.00" fill="#32359E" stroke="#32359E" stroke-width="0.3"/>
+    <polygon points="27.84,33.15 18.27,29.33 20.05,19.88 29.28,28.26" fill="#2C2F8D" stroke="#2C2F8D" stroke-width="0.3"/>
+    <polygon points="18.27,29.33 -11.81,17.32 -0.88,0.86 20.05,19.88" fill="#2E3191" stroke="#2E3191" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 29.28,28.26 34.13,27.72 40.00,38.00" fill="#0A75D2" stroke="#0A75D2" stroke-width="0.3"/>
+    <polygon points="29.28,28.26 20.05,19.88 26.38,14.15 34.13,27.72" fill="#0962B0" stroke="#0962B0" stroke-width="0.3"/>
+    <polygon points="20.05,19.88 -0.88,0.86 12.96,-9.36 26.38,14.15" fill="#0968BB" stroke="#0968BB" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 34.13,27.72 36.47,25.35 40.00,38.00" fill="#0087D4" stroke="#0087D4" stroke-width="0.3"/>
+    <polygon points="34.13,27.72 26.38,14.15 33.14,13.46 36.47,25.35" fill="#007CC2" stroke="#007CC2" stroke-width="0.3"/>
+    <polygon points="26.38,14.15 12.96,-9.36 25.50,-13.90 33.14,13.46" fill="#0082CC" stroke="#0082CC" stroke-width="0.3"/>
+    <polygon points="40.00,38.00 36.47,25.35 39.74,27.32 40.00,38.00" fill="#00B3BE" stroke="#00B3BE" stroke-width="0.3"/>
+    <polygon points="36.47,25.35 33.14,13.46 39.35,11.52 39.74,27.32" fill="#009DA6" stroke="#009DA6" stroke-width="0.3"/>
+    <polygon points="33.14,13.46 25.50,-13.90 38.69,-15.18 39.35,11.52" fill="#00BAC5" stroke="#00BAC5" stroke-width="0.3"/>
+  </g>
+  <g fill="#ffffff">
+    <polygon points="10.50,18.10 37.50,18.10 37.50,27.30 29.75,27.30 29.75,52.20 18.25,52.20 18.25,27.30 10.50,27.30"/>
+    <polygon points="44.00,18.10 71.00,18.10 71.00,27.30 63.25,27.30 63.25,52.20 51.75,52.20 51.75,27.30 44.00,27.30"/>
+  </g>
+  <text x="11.90" y="60.60" fill="#ffffff"
+        font-family="Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-size="8.6" font-weight="500"
+        textLength="57.60" lengthAdjust="spacingAndGlyphs">Tunisie Telecom</text>
+</svg>

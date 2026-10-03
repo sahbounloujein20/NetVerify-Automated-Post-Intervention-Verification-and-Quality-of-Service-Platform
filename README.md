@@ -1,13 +1,6 @@
+# NetVerify 📡
 
-</p>
- <p align="center">
-  <img  src="assets/tt.png" alt="NetVerify - Tunisie Telecom" width="180">
-</p>
-
-<h1 align="center">NetVerify</h1>
-
-<p align="center"><b>Automated Post-Intervention Verification and Quality-of-Service Platform</b></p>
-
+> **Automated Post-Intervention Verification and Quality-of-Service Platform**  
 > Developed for **Tunisie Telecom** (Unit Management of Services -- Hached Complex) in collaboration with **ENSI** (National School of Computer Sciences, University of Manouba).
 
 ---
@@ -52,18 +45,18 @@ NetVerify follows a decoupled, three-tier architecture that can be deployed enti
 
 ```mermaid
 flowchart TD
-    subgraph frontend ["Streamlit Frontend [Port 8501]"]
+    subgraph Streamlit Frontend [Port 8501]
         A[Dashboard UI]
         B[Geolocated Maps]
     end
-    subgraph backend ["FastAPI Backend [Port 8000]"]
+    subgraph FastAPI Backend [Port 8000]
         C[REST API Engine]
         D[Scikit-Learn DecisionTree]
     end
-    subgraph database ["Database Layer [Port 5432]"]
+    subgraph Database Layer [Port 5432]
         E[(PostgreSQL DB)]
     end
-    subgraph automation ["Automation Layer [Port 5678]"]
+    subgraph Automation Layer [Port 5678]
         F[n8n Workflow Engine]
     end
 

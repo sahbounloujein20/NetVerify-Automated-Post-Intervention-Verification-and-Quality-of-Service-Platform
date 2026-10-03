@@ -1,0 +1,109 @@
+# ================================================================
+# NetVerify — Full-Stack Docker Compose
+# ================================================================
+# Launches: PostgreSQL + FastAPI Backend + Streamlit Frontend + n8n
+#
+# Usage:
+#   docker-compose up --build -d        # Build and start all services
+#   docker-compose logs -f              # Follow all logs
+#   docker-compose logs -f backend      # Follow backend logs only
+#   docker-compose down                 # Stop all services
+#   docker-compose down -v              # Stop and delete all data volumes
+#
+# First run:
+#   After the stack is up, seed the database and create an admin user:
+#     docker-compose exec backend python database.py
+#     docker-compose exec backend python manage_users.py creer \
+#         --identifiant admin --nom "Superviseur" --role superviseur
+# ================================================================
+
+services:
+
+  # ── 1. PostgreSQL Database ────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: netverify-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-netverify2026}
+      POSTGRES_DB: telecom_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - netverify-net
+
+  # ── 2. FastAPI Backend ────────────────────────────────────
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: netverify-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-netverify2026}@postgres:5432/telecom_db
+      JWT_SECRET: ${JWT_SECRET:-change_me_in_production_please}
+      AI_PROVIDER: ${AI_PROVIDER:-ollama}
+      OLLAMA_URL: ${OLLAMA_URL:-http://host.docker.internal:11434}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - netverify-net
+
+  # ── 3. Streamlit Frontend ─────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: netverify-frontend
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      NETVERIFY_API_URL: http://backend:8000
+      NETVERIFY_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - netverify-net
+
+  # ── 4. n8n Workflow Engine ────────────────────────────────
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: netverify-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Africa/Tunis
+      - TZ=Africa/Tunis
+      # n8n needs to reach the backend inside the Docker network
+      # Workflows should use: http://backend:8000 as the API base URL
+    depends_on:
+      - backend
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - netverify-net
+
+# ── Persistent Volumes ──────────────────────────────────────
+volumes:
+  db_data:
+    driver: local
+  n8n_data:
+    driver: local
+
+# ── Internal Network ────────────────────────────────────────
+networks:
+  netverify-net:
+    driver: bridge

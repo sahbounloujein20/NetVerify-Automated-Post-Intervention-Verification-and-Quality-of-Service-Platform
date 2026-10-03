@@ -1,0 +1,11 @@
+# Frontend-specific Python dependencies
+
+# ---- Streamlit Dashboard ----
+streamlit>=1.30.0
+plotly>=5.18.0
+pydeck>=0.8.1
+pandas>=2.1.0
+
+# ---- HTTP Client (to call the FastAPI backend) ----
+requests>=2.31.0
+httpx>=0.26.0

@@ -1,0 +1,42 @@
+# Streamlit configuration — NetVerify (Tunisie Telecom)
+#
+# The [theme] values reuse the design tokens of `netverify/theme.py`, themselves
+# taken from the original mock-up. They dress the native widgets (select boxes,
+# tables, sliders); the stylesheet injected by the application dresses
+# everything else. Keep the two aligned.
+
+[theme]
+base = "dark"
+primaryColor = "#0072bc"
+backgroundColor = "#0a0e14"
+secondaryBackgroundColor = "#10161c"
+textColor = "#eef2f6"
+linkColor = "#5aa9dc"
+borderColor = "#1c242e"
+dataframeHeaderBackgroundColor = "#141b26"
+codeBackgroundColor = "#10161c"
+font = "Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif"
+baseRadius = "0.75rem"
+buttonRadius = "0.625rem"
+baseFontSize = 15
+showWidgetBorder = true
+chartCategoricalColors = ["#0072bc", "#d97706", "#1e9e6b", "#5aa9dc", "#dc3545"]
+chartSequentialColors = [
+    "#cfe4f5", "#a9cfec", "#82b8e2", "#5aa9dc", "#2f8fd0",
+    "#0072bc", "#005a96", "#004374", "#002d4f",
+]
+
+[theme.sidebar]
+backgroundColor = "#10161c"
+secondaryBackgroundColor = "#141b26"
+borderColor = "#1c242e"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = "full"

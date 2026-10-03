@@ -1,0 +1,48 @@
+# ===========================================================
+# NetVerify — Python Dependencies
+# ===========================================================
+# Install with: pip install -r requirements.txt
+
+# ---- Core Backend (FastAPI) ----
+fastapi>=0.110.0
+uvicorn>=0.27.0
+pydantic>=2.6.0
+python-multipart>=0.0.9
+starlette>=0.36.0
+
+# ---- Database ----
+SQLAlchemy>=2.0.25
+psycopg2-binary>=2.9.9
+
+# ---- Security & Authentication ----
+python-jose[cryptography]>=3.3.0
+bcrypt>=4.1.0
+passlib[bcrypt]>=1.7.4
+
+# ---- Rate Limiting ----
+slowapi>=0.1.9
+
+# ---- Data Science & Machine Learning ----
+numpy>=1.26.0
+pandas>=2.1.0
+scikit-learn>=1.4.0
+
+# ---- Frontend (Streamlit Dashboard) ----
+streamlit>=1.30.0
+plotly>=5.18.0
+pydeck>=0.8.1
+
+# ---- HTTP Client ----
+requests>=2.31.0
+httpx>=0.26.0
+
+# ---- Environment Management ----
+python-dotenv>=1.0.0
+
+# ---- Scheduler ----
+APScheduler>=3.10.0
+
+# ---- AI Chatbot (Optional — choose your provider) ----
+# For Google Gemini:
+# google-generativeai>=0.4.0
+# For local Ollama (no pip install needed, runs as a service)

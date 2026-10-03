@@ -1,0 +1,12 @@
+# Files and directories to exclude from the Docker build context
+
+__pycache__/
+*.pyc
+*.pyo
+_legacy/
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+README.md

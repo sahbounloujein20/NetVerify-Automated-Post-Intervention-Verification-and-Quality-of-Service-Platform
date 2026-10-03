@@ -1,0 +1,36 @@
+Isolation Forest — working notes
+================================
+
+Prediction
+----------
+For a given zone, predict how many work orders are expected and whether they
+are of the same kind as the previous ones. The point is to suggest a fix that
+resolves the whole batch — cable loss, network outage — since during the
+internship many work orders in the same zone turned out to have the same cause.
+
+Predict, from the work-order rate of a specific zone, which problem is most
+likely (cable loss or another), and attach a suggestion to each anomaly.
+The system is not meant to be real time.
+
+Scheduling
+----------
+Schedule Library / loop, driven from n8n.
+
+Running n8n locally:
+    cd C:\n8n-local
+    .\node_modules\.bin\n8n
+
+AI agent — adaptive scan interval
+---------------------------------
+Decide, per customer, how often the line should be scanned:
+
+* a customer whose line still shows an anomaly one week after the intervention
+  gets a shorter interval;
+* a customer whose connection is compliant after the weekly scan gets a longer
+  interval.
+
+
+Login	Role	Password
+loujein	supervisor	feN3HWLjGjNR8K
+tech001	technician	7bqp4MA5J7eWNR
+demo01	technician	TXCRB6wnUEG2yX

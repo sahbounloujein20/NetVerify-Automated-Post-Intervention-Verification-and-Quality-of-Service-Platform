@@ -1,0 +1,31 @@
+# Files and directories to exclude from the Docker build context
+# This speeds up builds and prevents secrets from leaking into images
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment secrets
+.env
+.env.*
+
+# IDE / OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local databases
+*.db
+*.sqlite
+
+# npm artifacts (not needed)
+package-lock.json
+node_modules/

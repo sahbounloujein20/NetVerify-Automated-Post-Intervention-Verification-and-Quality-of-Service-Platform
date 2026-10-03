@@ -1,0 +1,1117 @@
+{
+  "name": "NetVerify — D+14 compliance control",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 1 · Inputs\n\nThree doors, a single pipeline. Each door stamps its `origin` field: that field decides the routing, whether the digest is sent and what is returned to the dashboard.",
+        "width": 440,
+        "height": 200,
+        "color": 4
+      },
+      "id": "note-entrees",
+      "name": "Note — Inputs",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -500
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2 · Parameters\n\n**The only node to adapt after import.**\n\nIn a container: `host.docker.internal`. On a native n8n: `127.0.0.1`. The service token lives in a *Header Auth* credential, never here.",
+        "width": 440,
+        "height": 200,
+        "color": 5
+      },
+      "id": "note-parametres",
+      "name": "Note — Parameters",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        -500
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3 · Control\n\nThe health pre-check separates \"backend switched off\" from \"control crashed\".\n\nThe refresh is non-blocking: if it fails, the control runs on the last known measurements.",
+        "width": 480,
+        "height": 200,
+        "color": 3
+      },
+      "id": "note-controle",
+      "name": "Note — Control",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -500
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 4 · Reporting\n\nAll the formatting is done once in the Code node — the email nodes consume nothing but `email_subject` and `email_html`. The \"no anomaly\" digest is only sent on a scheduled trigger: ten clicks must not produce ten e-mails.",
+        "width": 900,
+        "height": 200,
+        "color": 6
+      },
+      "id": "note-restitution",
+      "name": "Note — Reporting",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        660,
+        -500
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 6 · Failures & response\n\nFailures feed the alert **and** the response in parallel: the email node overwrites the JSON of the item.\n\nThe dashboard always receives a 200 — a 5xx would make it replay a control that has already run.",
+        "width": 420,
+        "height": 260,
+        "color": 2
+      },
+      "id": "note-pannes",
+      "name": "Note — Failures",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger-quotidien",
+      "name": "Daily control — 06:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -660,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "netverify-verification",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "trigger-webhook",
+      "name": "Dashboard trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -660,
+        0
+      ],
+      "webhookId": "a7f3c1e2-4b8d-4f6a-9c2e-1d5b8e3a7c94"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger-collection",
+      "name": "Hourly collection",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -660,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "org-1",
+              "name": "origin",
+              "value": "scheduled",
+              "type": "string"
+            },
+            {
+              "id": "org-2",
+              "name": "origin_label",
+              "value": "daily 06:00 schedule",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ctx-scheduled",
+      "name": "Context — scheduled",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -440,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "org-1",
+              "name": "origin",
+              "value": "manual",
+              "type": "string"
+            },
+            {
+              "id": "org-2",
+              "name": "origin_label",
+              "value": "manual trigger from the dashboard",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ctx-manual",
+      "name": "Context — manual",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "org-1",
+              "name": "origin",
+              "value": "collection",
+              "type": "string"
+            },
+            {
+              "id": "org-2",
+              "name": "origin_label",
+              "value": "hourly collection of the NetScan measurements",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ctx-collection",
+      "name": "Context — collection",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -440,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "par-1",
+              "name": "api_base_url",
+              "value": "http://host.docker.internal:8000",
+              "type": "string"
+            },
+            {
+              "id": "par-2",
+              "name": "recipients",
+              "value": "lojlojfallous@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "par-3",
+              "name": "sender",
+              "value": "lojlojfallous@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "par-4",
+              "name": "timezone",
+              "value": "Africa/Tunis",
+              "type": "string"
+            },
+            {
+              "id": "par-5",
+              "name": "verification_delay_days",
+              "value": 14,
+              "type": "number"
+            },
+            {
+              "id": "par-6",
+              "name": "max_email_rows",
+              "value": 25,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "parametres",
+      "name": "NetVerify parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -220,
+        0
+      ],
+      "notes": "The only node to adapt after import: backend URL, recipients, sender."
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "route-collection",
+                    "leftValue": "={{ $json.origin }}",
+                    "rightValue": "collection",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Collection"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "route-verification",
+                    "leftValue": "={{ $json.origin }}",
+                    "rightValue": "collection",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Verification"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aiguillage",
+      "name": "Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -20,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.api_base_url }}/",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "id": "http-sante",
+      "name": "Backend health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        -160
+      ],
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000,
+      "notes": "Public route / — separates \"backend switched off\" from \"control crashed\"."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('NetVerify parameters').first().json.api_base_url }}/measurements/refresh-all",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "http-refresh-pre",
+      "name": "Refresh the measurements",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        -160
+      ],
+      "onError": "continueRegularOutput",
+      "notes": "Non-blocking. No retry: the endpoint is capped at 6 calls/hour, and insisting would burn the quota of the hourly collection.",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REMPLACER_PAR_ID_CREDENTIAL",
+          "name": "NetVerify — Jeton de service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('NetVerify parameters').first().json.api_base_url }}/measurements/verify-compliance",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "http-verif",
+      "name": "D+14 compliance control",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        -160
+      ],
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 15000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REMPLACER_PAR_ID_CREDENTIAL",
+          "name": "NetVerify — Jeton de service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// D+14 compliance report — normalisation, indicators and formatting.\n// All the presentation is centralised here: the downstream email nodes only\n// consume `email_subject` and `email_html`. A 40-line expression inside a\n// \"subject\" field is neither readable nor editable by the business.\n\nconst p = $('NetVerify parameters').first().json;\nconst src = $input.first().json || {};\n\n// The messages come from the database (typed by a technician): they are\n// escaped before being injected into HTML.\nconst esc = (v) => String(v ?? '').replace(/[&<>\"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' })[c]);\n\nconst anomalies = Array.isArray(src.anomalies) ? src.anomalies : [];\nconst nbAnomalies = Number(src.nb_anomalies ?? anomalies.length) || 0;\nconst nbConformes = Number(src.nb_conformes ?? 0) || 0;\nconst nbSansMesure = Number(src.nb_sans_mesure ?? 0) || 0;\nconst nbVerified = nbAnomalies + nbConformes + nbSansMesure;\n\n// Lines with no NetScan measurement are neither compliant nor at fault:\n// counting them in the denominator would sink the rate because of a probe gap,\n// not because of a service defect.\nconst base = nbAnomalies + nbConformes;\nconst complianceRate = base ? Math.round((nbConformes / base) * 1000) / 10 : 100;\n\nconst RANK = { high: 0, medium: 1, low: 2 };\nconst sorted = [...anomalies].sort((a, b) => (RANK[a.urgence] ?? 9) - (RANK[b.urgence] ?? 9));\n\nconst byUrgency = { high: 0, medium: 0, low: 0 };\nfor (const a of anomalies) { if (a.urgence in byUrgency) byUrgency[a.urgence] += 1; }\n\n// The technology is carried by the prefix of ref_demande (e.g. ADSL/2026/15004).\nconst byTechnology = {};\nfor (const a of anomalies) {\n  const t = String(a.ref_demande || '').split('/')[0].trim().toUpperCase() || 'UNKNOWN';\n  byTechnology[t] = (byTechnology[t] || 0) + 1;\n}\n\nconst level = byUrgency.high > 0 ? 'CRITICAL' : (nbAnomalies > 0 ? 'ALERT' : 'COMPLIANT');\nconst tint = { CRITICAL: '#c0392b', ALERT: '#e67e22', COMPLIANT: '#1e8449' }[level];\nconst bullet = { CRITICAL: '\\u{1F6A8}', ALERT: '\\u26A0\\uFE0F', COMPLIANT: '\\u2705' }[level];\n\nconst delay = p.verification_delay_days ?? 14;\nconst stamp = $now.setZone(p.timezone || 'Africa/Tunis').toFormat('dd/MM/yyyy \\u00E0 HH:mm');\nconst trigger = p.origin_label || 'automatic execution';\n\nconst urgencyColour = { high: '#c0392b', medium: '#e67e22', low: '#7f8c8d' };\nconst cap = Number(p.max_email_rows) || 25;\nconst shown = sorted.slice(0, cap);\nconst hidden = sorted.length - shown.length;\n\nconst kpi = (value, label) => `<td align=\"center\" width=\"25%\" style=\"padding:14px 6px;border:1px solid #e5e8ec;background:#fafbfc\"><div style=\"font:700 24px/1 Arial,Helvetica,sans-serif;color:#1f2933\">${value}</div><div style=\"font:400 11px/1.5 Arial,Helvetica,sans-serif;color:#6b7580;text-transform:uppercase;letter-spacing:.6px;margin-top:5px\">${label}</div></td>`;\n\nconst th = (label) => `<th align=\"left\" style=\"padding:10px;font:700 11px/1.5 Arial,Helvetica,sans-serif;color:#6b7580;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #e5e8ec\">${label}</th>`;\nconst td = (content, extra) => `<td style=\"padding:9px 10px;border-bottom:1px solid #eceff2;font:400 12px/1.6 Arial,Helvetica,sans-serif;color:#1f2933;${extra || ''}\">${content}</td>`;\n\nconst rows = shown.map((a) => `<tr>${td(esc(a.ref_demande), 'white-space:nowrap')}${td(esc(a.num_appel), 'white-space:nowrap')}<td style=\"padding:9px 10px;border-bottom:1px solid #eceff2;font:700 11px/1.6 Arial,Helvetica,sans-serif;text-transform:uppercase;white-space:nowrap;color:${urgencyColour[a.urgence] || '#7f8c8d'}\">${esc(a.urgence)}</td>${td(esc(a.message), 'color:#4a5560')}</tr>`).join('');\n\nconst breakdown = Object.entries(byTechnology).sort((a, b) => b[1] - a[1]).map(([t, n]) => `${esc(t)} : ${n}`).join(' &nbsp;&middot;&nbsp; ') || '\\u2014';\n\nconst body = nbAnomalies > 0\n  ? `<div style=\"font:700 12px/1.5 Arial,Helvetica,sans-serif;color:#1f2933;margin:22px 0 4px\">Detail of the gaps</div><div style=\"font:400 12px/1.6 Arial,Helvetica,sans-serif;color:#6b7580;margin-bottom:10px\">Urgency: <b style=\"color:${urgencyColour.high}\">${byUrgency.high} high</b> &nbsp;&middot;&nbsp; <b style=\"color:${urgencyColour.medium}\">${byUrgency.medium} medium</b> &nbsp;&middot;&nbsp; ${byUrgency.low} low<br>Technologies: ${breakdown}</div><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse;border:1px solid #e5e8ec\"><thead><tr style=\"background:#f4f6f8\">${th('Reference')}${th('Customer')}${th('Urgency')}${th('Diagnosis')}</tr></thead><tbody>${rows}</tbody></table>${hidden > 0 ? `<div style=\"font:400 12px/1.6 Arial,Helvetica,sans-serif;color:#6b7580;margin-top:10px\">+ ${hidden} further anomaly(ies) not listed here &mdash; the full detail is in the follow-up journal of the dashboard.</div>` : ''}`\n  : `<div style=\"margin:22px 0 4px;padding:16px;border:1px solid #d4e8da;background:#f2f9f4;font:400 13px/1.7 Arial,Helvetica,sans-serif;color:#1e5631\">No rate gap detected on the interventions closed more than ${delay} days ago. The measured rates match the subscribed profile.</div>`;\n\nconst html = `<div style=\"background:#f0f2f5;padding:24px 0;font-family:Arial,Helvetica,sans-serif\"><table role=\"presentation\" align=\"center\" width=\"680\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:680px;max-width:100%;border-collapse:collapse;background:#ffffff;border:1px solid #e0e4e8\"><tr><td style=\"background:${tint};padding:18px 24px\"><div style=\"font:700 17px/1.35 Arial,Helvetica,sans-serif;color:#ffffff\">${bullet} NetVerify &mdash; D+${delay} compliance control</div><div style=\"font:400 12px/1.6 Arial,Helvetica,sans-serif;color:#ffffff;opacity:.85;margin-top:4px\">Tunisie Telecom &nbsp;&middot;&nbsp; ${stamp} &nbsp;&middot;&nbsp; ${trigger}</div></td></tr><tr><td style=\"padding:22px 24px\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse\"><tr>${kpi(nbVerified, 'Verified')}${kpi(nbConformes, 'Compliant')}${kpi(nbAnomalies, 'Anomalies')}${kpi(complianceRate + ' %', 'Compliance rate')}</tr></table>${nbSansMesure > 0 ? `<div style=\"font:400 12px/1.6 Arial,Helvetica,sans-serif;color:#8a6d3b;background:#fcf8e3;border:1px solid #f2e3b3;padding:10px 12px;margin-top:14px\">${nbSansMesure} work order(s) with no usable NetScan measurement: they are excluded from the compliance rate and need to be probed.</div>` : ''}${body}</td></tr><tr><td style=\"padding:0 24px 20px\"><div style=\"border-top:1px solid #eceff2;padding-top:14px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#96a0aa\">Automatic message from the n8n workflow &laquo; NetVerify &mdash; D+${delay} compliance control &raquo;. Comparison of the measured rate with the subscribed rate, 10 % tolerance, on the interventions in state &laquo; Traite &raquo; for more than ${delay} days.</div></td></tr></table></div>`;\n\nconst subject = nbAnomalies > 0\n  ? `${bullet} NetVerify \\u2014 ${nbAnomalies} D+${delay} anomaly(ies)${byUrgency.high > 0 ? ` including ${byUrgency.high} critical` : ''} \\u2014 ${stamp}`\n  : `\\u2705 NetVerify \\u2014 D+${delay} control compliant (${nbVerified} verified) \\u2014 ${stamp}`;\n\nconst summary = nbAnomalies > 0\n  ? `${nbAnomalies} anomaly(ies) out of ${nbVerified} work order(s) verified \\u2014 compliance rate ${complianceRate} %.`\n  : `${nbVerified} work order(s) verified, no anomaly.`;\n\nreturn [{\n  json: {\n    status: 'success',\n    origin: p.origin,\n    level,\n    stamp,\n    // Contract expected by the Streamlit dashboard: nb_anomalies / nb_conformes\n    // / nb_sans_mesure, otherwise it falls back on `message`.\n    nb_anomalies: nbAnomalies,\n    nb_conformes: nbConformes,\n    nb_sans_mesure: nbSansMesure,\n    nb_verified: nbVerified,\n    compliance_rate: complianceRate,\n    by_urgency: byUrgency,\n    by_technology: byTechnology,\n    anomalies: sorted,\n    email_subject: subject,\n    email_html: html,\n    response: {\n      status: 'success',\n      message: summary,\n      level,\n      nb_anomalies: nbAnomalies,\n      nb_conformes: nbConformes,\n      nb_sans_mesure: nbSansMesure,\n      compliance_rate: complianceRate,\n      anomalies: sorted,\n    },\n  },\n}];\n"
+      },
+      "id": "code-rapport",
+      "name": "Compliance report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-anomalies",
+              "leftValue": "={{ $json.nb_anomalies }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-anomalies",
+      "name": "Anomalies detected?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('NetVerify parameters').first().json.sender }}",
+        "toEmail": "={{ $('NetVerify parameters').first().json.recipients }}",
+        "subject": "={{ $json.email_subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.email_html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "email-anomalies",
+      "name": "Anomaly report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1320,
+        -260
+      ],
+      "onError": "continueRegularOutput",
+      "notes": "A send failure must not invalidate a control already written to the database: the anomaly logs stay readable in the dashboard.",
+      "credentials": {
+        "smtp": {
+          "id": "REMPLACER_PAR_ID_CREDENTIAL_SMTP",
+          "name": "SMTP NetVerify"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-scheduled",
+              "leftValue": "={{ $json.origin }}",
+              "rightValue": "scheduled",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-synthese",
+      "name": "Scheduled digest?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        -40
+      ],
+      "notes": "No \"all clear\" e-mail on a manual click: the result is already shown on screen."
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('NetVerify parameters').first().json.sender }}",
+        "toEmail": "={{ $('NetVerify parameters').first().json.recipients }}",
+        "subject": "={{ $json.email_subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.email_html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "email-synthese",
+      "name": "Daily digest",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1540,
+        -40
+      ],
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "smtp": {
+          "id": "REMPLACER_PAR_ID_CREDENTIAL_SMTP",
+          "name": "SMTP NetVerify"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('NetVerify parameters').first().json.api_base_url }}/measurements/refresh-all",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "http-collection",
+      "name": "Collection — refresh the measurements",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        560
+      ],
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 30000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REMPLACER_PAR_ID_CREDENTIAL",
+          "name": "NetVerify — Jeton de service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ech-1",
+              "name": "step",
+              "value": "Backend health",
+              "type": "string"
+            },
+            {
+              "id": "ech-2",
+              "name": "instruction",
+              "value": "The NetVerify backend is not answering. Check that the `backend` container (or `uvicorn main:app`) and PostgreSQL are started, then run the control again from the dashboard.",
+              "type": "string"
+            },
+            {
+              "id": "ech-3",
+              "name": "detail",
+              "value": "={{ $json.error?.message || $json.error?.description || (typeof $json.error === 'string' ? $json.error : JSON.stringify($json.error ?? $json)) }}",
+              "type": "string"
+            },
+            {
+              "id": "ech-4",
+              "name": "origin",
+              "value": "={{ $('NetVerify parameters').first().json.origin }}",
+              "type": "string"
+            },
+            {
+              "id": "ech-5",
+              "name": "origin_label",
+              "value": "={{ $('NetVerify parameters').first().json.origin_label }}",
+              "type": "string"
+            },
+            {
+              "id": "ech-6",
+              "name": "response",
+              "value": "={{ ({ status: 'error', error: { step: 'Backend health', message: ($json.error?.message || 'Backend unreachable') } }) }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "echec-sante",
+      "name": "Failure — backend unreachable",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ech-1",
+              "name": "step",
+              "value": "D+14 compliance control",
+              "type": "string"
+            },
+            {
+              "id": "ech-2",
+              "name": "instruction",
+              "value": "The backend answered but the analysis failed. Check the logs of the `backend` container: the error usually comes from `comparator.py` or from a database write. Do not replay blindly — a partially written control would duplicate follow-up logs.",
+              "type": "string"
+            },
+            {
+              "id": "ech-3",
+              "name": "detail",
+              "value": "={{ $json.error?.message || $json.error?.description || (typeof $json.error === 'string' ? $json.error : JSON.stringify($json.error ?? $json)) }}",
+              "type": "string"
+            },
+            {
+              "id": "ech-4",
+              "name": "origin",
+              "value": "={{ $('NetVerify parameters').first().json.origin }}",
+              "type": "string"
+            },
+            {
+              "id": "ech-5",
+              "name": "origin_label",
+              "value": "={{ $('NetVerify parameters').first().json.origin_label }}",
+              "type": "string"
+            },
+            {
+              "id": "ech-6",
+              "name": "response",
+              "value": "={{ ({ status: 'error', error: { step: 'D+14 compliance control', message: ($json.error?.message || 'Compliance analysis failed') } }) }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "echec-verif",
+      "name": "Failure — D+14 control",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ech-1",
+              "name": "step",
+              "value": "Hourly collection of the NetScan measurements",
+              "type": "string"
+            },
+            {
+              "id": "ech-2",
+              "name": "instruction",
+              "value": "The NetScan measurements were not refreshed. If the failure persists, the 06:00 D+14 control will work on stale measurements and may report anomalies that are already resolved. Check the backend, the 6 calls/hour quota and the NetScan probe.",
+              "type": "string"
+            },
+            {
+              "id": "ech-3",
+              "name": "detail",
+              "value": "={{ $json.error?.message || $json.error?.description || (typeof $json.error === 'string' ? $json.error : JSON.stringify($json.error ?? $json)) }}",
+              "type": "string"
+            },
+            {
+              "id": "ech-4",
+              "name": "origin",
+              "value": "collection",
+              "type": "string"
+            },
+            {
+              "id": "ech-5",
+              "name": "origin_label",
+              "value": "hourly collection of the NetScan measurements",
+              "type": "string"
+            },
+            {
+              "id": "ech-6",
+              "name": "response",
+              "value": "={{ ({ status: 'error', error: { step: 'Hourly collection', message: ($json.error?.message || 'Measurement refresh failed') } }) }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "failure-collection",
+      "name": "Failure — collection",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $('NetVerify parameters').first().json.sender }}",
+        "toEmail": "={{ $('NetVerify parameters').first().json.recipients }}",
+        "subject": "={{ '\\u{1F6A8} NetVerify \\u2014 Failure: ' + $json.step }}",
+        "emailFormat": "html",
+        "html": "={{ '<div style=\"background:#f0f2f5;padding:24px 0;font-family:Arial,Helvetica,sans-serif\"><table role=\"presentation\" align=\"center\" width=\"680\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:680px;max-width:100%;border-collapse:collapse;background:#ffffff;border:1px solid #e0e4e8\"><tr><td style=\"background:#c0392b;padding:18px 24px\"><div style=\"font:700 17px/1.35 Arial,Helvetica,sans-serif;color:#ffffff\">\\u{1F6A8} NetVerify \\u2014 Automation incident</div><div style=\"font:400 12px/1.6 Arial,Helvetica,sans-serif;color:#ffffff;opacity:.85;margin-top:4px\">Tunisie Telecom &nbsp;&middot;&nbsp; ' + $now.setZone($('NetVerify parameters').first().json.timezone).toFormat('dd/MM/yyyy \\u00E0 HH:mm') + '</div></td></tr><tr><td style=\"padding:22px 24px;font:400 13px/1.7 Arial,Helvetica,sans-serif;color:#1f2933\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse;border:1px solid #e5e8ec\"><tr><td width=\"140\" style=\"padding:9px 12px;background:#fafbfc;border-bottom:1px solid #eceff2;font:700 12px/1.6 Arial,Helvetica,sans-serif;color:#6b7580\">Step</td><td style=\"padding:9px 12px;border-bottom:1px solid #eceff2;font:400 12px/1.6 Arial,Helvetica,sans-serif\">' + $json.step + '</td></tr><tr><td style=\"padding:9px 12px;background:#fafbfc;border-bottom:1px solid #eceff2;font:700 12px/1.6 Arial,Helvetica,sans-serif;color:#6b7580\">Trigger</td><td style=\"padding:9px 12px;border-bottom:1px solid #eceff2;font:400 12px/1.6 Arial,Helvetica,sans-serif\">' + $json.origin_label + '</td></tr><tr><td style=\"padding:9px 12px;background:#fafbfc;font:700 12px/1.6 Arial,Helvetica,sans-serif;color:#6b7580\">Execution</td><td style=\"padding:9px 12px;font:400 12px/1.6 Arial,Helvetica,sans-serif\">#' + $execution.id + '</td></tr></table><div style=\"font:700 12px/1.5 Arial,Helvetica,sans-serif;margin:20px 0 6px\">Technical message</div><pre style=\"margin:0;padding:12px;background:#f7f8fa;border:1px solid #e5e8ec;font:400 12px/1.6 Consolas,Monaco,monospace;color:#4a5560;white-space:pre-wrap;word-break:break-word\">' + String($json.detail).replace(/&/g,\"&amp;\").replace(/</g,\"&lt;\").replace(/>/g,\"&gt;\") + '</pre><div style=\"font:700 12px/1.5 Arial,Helvetica,sans-serif;margin:20px 0 6px\">What to do</div><div style=\"padding:12px;background:#fcf8e3;border:1px solid #f2e3b3;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#8a6d3b\">' + $json.instruction + '</div></td></tr></table></div>' }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "email-panne",
+      "name": "Technical alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        300
+      ],
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "smtp": {
+          "id": "REMPLACER_PAR_ID_CREDENTIAL_SMTP",
+          "name": "SMTP NetVerify"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-manual",
+              "leftValue": "={{ $json.origin }}",
+              "rightValue": "manual",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-manual",
+      "name": "Manual origin?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        120
+      ],
+      "notes": "\"Respond to Webhook\" only makes sense when the execution comes from the webhook."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json.response) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond",
+      "name": "Response to the dashboard",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        120
+      ],
+      "notes": "Always 200, even on failure: a 5xx would make Streamlit replay the control directly and would duplicate the follow-up logs."
+    },
+    {
+      "parameters": {
+        "content": "## 5 · Hourly collection — refreshes the NetScan measurements every hour, so that the 06:00 control works on fresh data.",
+        "width": 1420,
+        "height": 140,
+        "color": 7
+      },
+      "id": "note-collection",
+      "name": "Note — Collection",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Daily control — 06:00": {
+      "main": [
+        [
+          {
+            "node": "Context — scheduled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dashboard trigger": {
+      "main": [
+        [
+          {
+            "node": "Context — manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hourly collection": {
+      "main": [
+        [
+          {
+            "node": "Context — collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Context — scheduled": {
+      "main": [
+        [
+          {
+            "node": "NetVerify parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Context — manual": {
+      "main": [
+        [
+          {
+            "node": "NetVerify parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Context — collection": {
+      "main": [
+        [
+          {
+            "node": "NetVerify parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NetVerify parameters": {
+      "main": [
+        [
+          {
+            "node": "Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Router": {
+      "main": [
+        [
+          {
+            "node": "Collection — refresh the measurements",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Backend health",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Backend health": {
+      "main": [
+        [
+          {
+            "node": "Refresh the measurements",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure — backend unreachable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refresh the measurements": {
+      "main": [
+        [
+          {
+            "node": "D+14 compliance control",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "D+14 compliance control": {
+      "main": [
+        [
+          {
+            "node": "Compliance report",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure — D+14 control",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compliance report": {
+      "main": [
+        [
+          {
+            "node": "Anomalies detected?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Manual origin?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anomalies detected?": {
+      "main": [
+        [
+          {
+            "node": "Anomaly report",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Scheduled digest?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scheduled digest?": {
+      "main": [
+        [
+          {
+            "node": "Daily digest",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Collection — refresh the measurements": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Failure — collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Failure — backend unreachable": {
+      "main": [
+        [
+          {
+            "node": "Technical alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Manual origin?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Failure — D+14 control": {
+      "main": [
+        [
+          {
+            "node": "Technical alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Manual origin?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Failure — collection": {
+      "main": [
+        [
+          {
+            "node": "Technical alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Manual origin?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual origin?": {
+      "main": [
+        [
+          {
+            "node": "Response to the dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Africa/Tunis",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "executionTimeout": 900,
+    "callerPolicy": "workflowsFromSameOwner"
+  }
+}

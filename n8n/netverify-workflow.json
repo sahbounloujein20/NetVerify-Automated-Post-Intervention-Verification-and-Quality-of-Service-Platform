@@ -1,0 +1,298 @@
+{
+  "name": "NetVerify — Daily automation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "name": "Every hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 140],
+      "id": "trigger-hourly"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/measurements/refresh-all",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Service-Token",
+              "value": "REPLACE_WITH_YOUR_NETVERIFY_SERVICE_TOKEN"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "Refresh NetScan measurements",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "position": [460, 140],
+      "id": "http-refresh"
+    },
+    {
+      "parameters": {
+        "fromEmail": "lojlojfallous@gmail.com",
+        "toEmail": "lojlojfallous@gmail.com",
+        "subject": "=⚠️ NetVerify — Hourly measurement refresh failed",
+        "html": "={{ \"<h2>Failure — NetScan measurement refresh</h2><p>The NetVerify backend did not answer after 3 attempts.</p><p><b>Time:</b> \" + $now.format('dd/MM/yyyy HH:mm') + \"</p><p><b>Detail:</b> \" + ($json.error ? $json.error.message : JSON.stringify($json)) + \"</p><p>Check that <code>uvicorn main:app</code> and PostgreSQL are running on the host.</p>\" }}",
+        "options": {}
+      },
+      "name": "Failure alert — refresh",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [720, 60],
+      "id": "email-alert-refresh",
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_WITH_YOUR_SMTP_CREDENTIAL_ID",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * *"
+            }
+          ]
+        }
+      },
+      "name": "Every day at 06:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 400],
+      "id": "trigger-daily"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "netverify-verification",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Manual trigger (dashboard)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 620],
+      "id": "webhook-manual",
+      "webhookId": "a7f3c1e2-4b8d-4f6a-9c2e-1d5b8e3a7c94"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/measurements/verify-compliance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Service-Token",
+              "value": "REPLACE_WITH_YOUR_NETVERIFY_SERVICE_TOKEN"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "name": "Run D+14 compliance check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "position": [480, 500],
+      "id": "http-verify"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-anomalies",
+              "leftValue": "={{ $json.nb_anomalies }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Anomalies detected?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [760, 380],
+      "id": "if-anomalies"
+    },
+    {
+      "parameters": {
+        "fromEmail": "lojlojfallous@gmail.com",
+        "toEmail": "lojlojfallous@gmail.com",
+        "subject": "={{ ($json.anomalies.filter(a => a.urgence === 'high').length > 0 ? '🚨' : '⚠️') + \" NetVerify — \" + $json.nb_anomalies + \" D+14 anomaly(ies) detected\" }}",
+        "html": "={{ \"<h2>NetVerify — D+14 verification</h2><p>\" + $json.nb_anomalies + \" anomaly(ies) detected out of \" + ($json.nb_conformes + $json.nb_anomalies + $json.nb_sans_mesure) + \" work order(s) verified — \" + $json.nb_conformes + \" compliant, \" + $json.nb_sans_mesure + \" with no measurement.</p><table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:sans-serif;font-size:13px'><tr style='background:#f2f2f2'><th>Référence</th><th>Client</th><th>Urgence</th><th>Détail</th></tr>\" + [...$json.anomalies].sort((a,b) => ({haute:0,moyenne:1,faible:2}[a.urgence] - {haute:0,moyenne:1,faible:2}[b.urgence])).map(a => \"<tr><td>\" + a.ref_demande + \"</td><td>\" + a.num_appel + \"</td><td style='color:\" + (a.urgence === 'high' ? '#e74c3c' : a.urgence === 'moyenne' ? '#f39c12' : '#7f8c8d') + \";font-weight:bold'>\" + a.urgence.toUpperCase() + \"</td><td>\" + a.message + \"</td></tr>\").join(\"\") + \"</table>\" }}",
+        "options": {}
+      },
+      "name": "Notify anomalies (e-mail)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1020, 300],
+      "id": "email-notify",
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_WITH_YOUR_SMTP_CREDENTIAL_ID",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "lojlojfallous@gmail.com",
+        "toEmail": "lojlojfallous@gmail.com",
+        "subject": "=⚠️ NetVerify — D+14 compliance verification failed",
+        "html": "={{ \"<h2>Failure — D+14 verification</h2><p>The NetVerify backend did not answer after 3 attempts.</p><p><b>Time:</b> \" + $now.format('dd/MM/yyyy HH:mm') + \"</p><p><b>Trigger:</b> \" + ($execution.mode === 'manual' ? 'manual execution' : 'schedule') + \"</p><p><b>Detail:</b> \" + ($json.error ? $json.error.message : JSON.stringify($json)) + \"</p><p>Check that <code>uvicorn main:app</code> and PostgreSQL are running on the host.</p>\" }}",
+        "options": {}
+      },
+      "name": "Failure alert — verification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [760, 640],
+      "id": "email-alert-verify",
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_WITH_YOUR_SMTP_CREDENTIAL_ID",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "firstIncomingItem",
+        "options": {}
+      },
+      "name": "Reply to the dashboard",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1020, 620],
+      "id": "respond-dashboard"
+    }
+  ],
+  "connections": {
+    "Every hour": {
+      "main": [
+        [
+          {
+            "node": "Refresh NetScan measurements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refresh NetScan measurements": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Failure alert — refresh",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every day at 06:00": {
+      "main": [
+        [
+          {
+            "node": "Run D+14 compliance check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual trigger (dashboard)": {
+      "main": [
+        [
+          {
+            "node": "Run D+14 compliance check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run D+14 compliance check": {
+      "main": [
+        [
+          {
+            "node": "Anomalies detected?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Reply to the dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure alert — verification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Reply to the dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anomalies detected?": {
+      "main": [
+        [
+          {
+            "node": "Notify anomalies (e-mail)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
