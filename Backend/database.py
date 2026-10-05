@@ -16,7 +16,7 @@ import sys
 # runnable with a plain `python main.py`, but it carries a development password
 # written into the repository: every deployment MUST set NETVERIFY_DATABASE_URL,
 # and the warning below is a reminder on every start without the variable.
-_DEV_URL = "postgresql://postgres:loujein@localhost:5432/telecom_db"
+_DEV_URL = "postgresql://postgres:/telecom_db"
 DATABASE_URL = os.environ.get("NETVERIFY_DATABASE_URL", "").strip()
 
 if not DATABASE_URL:
